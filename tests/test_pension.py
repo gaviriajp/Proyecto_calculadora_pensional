@@ -192,6 +192,51 @@ class TestPension(unittest.TestCase):
             logica_pension.calcular_pension(datos)
 
     # =========================
+    # SEXO INVALIDO
+    # =========================
+
+    def test_sexo_invalido_letra(self):
+        datos = logica_pension.DatosPension(
+            ibc_ultimos_10=4_800_000,
+            ibc_toda_vida=5_000_000,
+            salario_minimo_legal=2_000_000,
+            semanas_cotizadas=1300,
+            edad=65,
+            sexo="X"
+        )
+
+        with self.assertRaises(logica_pension.SexoInvalido):
+            logica_pension.calcular_pension(datos)
+
+    def test_sexo_invalido_vacio(self):
+        datos = logica_pension.DatosPension(
+            ibc_ultimos_10=4_800_000,
+            ibc_toda_vida=5_000_000,
+            salario_minimo_legal=2_000_000,
+            semanas_cotizadas=1300,
+            edad=65,
+            sexo=""
+        )
+
+        with self.assertRaises(logica_pension.SexoInvalido):
+            logica_pension.calcular_pension(datos)
+
+    def test_sexo_invalido_minuscula(self):
+        # El modelo espera 'M' o 'F' en mayúscula; la normalización de
+        # mayúsculas es responsabilidad de la vista, no del modelo.
+        datos = logica_pension.DatosPension(
+            ibc_ultimos_10=4_800_000,
+            ibc_toda_vida=5_000_000,
+            salario_minimo_legal=2_000_000,
+            semanas_cotizadas=1300,
+            edad=65,
+            sexo="m"
+        )
+
+        with self.assertRaises(logica_pension.SexoInvalido):
+            logica_pension.calcular_pension(datos)
+
+    # =========================
     # CASOS EXCEPCIONALES
     # =========================
 

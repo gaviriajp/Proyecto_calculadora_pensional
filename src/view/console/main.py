@@ -110,7 +110,8 @@ def main():
         logica_pension.SalarioMinimoLegalVigenteCero,
         logica_pension.SalarioMinimoNegativo,
         logica_pension.SemanasNegativas,
-        logica_pension.EdadInsuficiente
+        logica_pension.EdadInsuficiente,
+        logica_pension.SexoInvalido
     ) as error:
         manejar_error(error)
 

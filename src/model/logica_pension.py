@@ -13,6 +13,8 @@ TASA_REEMPLAZO_MAXIMA = 80
 EDAD_MINIMA_MUJER = 57
 EDAD_MINIMA_HOMBRE = 62
 
+SEXOS_VALIDOS = ("M", "F")
+
 
 @dataclass
 class DatosPension:
@@ -93,6 +95,14 @@ class EdadInsuficiente(Exception):
     def __init__(self):
         super().__init__("La edad es menor a la requerida para acceder a la pensión")
 
+class SexoInvalido(Exception):
+    """
+    Excepcion personalizada para indicar que el valor de sexo
+    ingresado no es 'M' ni 'F'.
+    """
+    def __init__(self):
+        super().__init__("El sexo debe ser 'M' (hombre) o 'F' (mujer)")
+
 def calcular_ibl(ibc_ultimos_10: float,ibc_toda_vida: float) -> float:
     ingreso_base_liquidacion = max(ibc_ultimos_10,ibc_toda_vida)
 
@@ -149,6 +159,11 @@ def validar_semanas(datos: DatosPension):
         raise SemanasInsuficientes()
 
 
+def validar_sexo(datos: DatosPension):
+    if datos.sexo not in SEXOS_VALIDOS:
+        raise SexoInvalido()
+
+
 def validar_edad(datos: DatosPension):
     if (datos.sexo == "F"and datos.edad < EDAD_MINIMA_MUJER):
         raise EdadInsuficiente()
@@ -161,6 +176,7 @@ def validar_datos(datos: DatosPension):
     validar_ibl(datos)
     validar_salario_minimo(datos)
     validar_semanas(datos)
+    validar_sexo(datos)
     validar_edad(datos)
 
 
