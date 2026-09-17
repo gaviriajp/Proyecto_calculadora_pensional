@@ -1,11 +1,15 @@
 # Cálculo de Pensión de Vejez en Colombia
 
-Calculadora de pensión de vejez para el Régimen de Prima Media en Colombia, desarrollada en Python.
+Calculadora de pensión de vejez para el Régimen de Prima Media en Colombia, desarrollada en Python, con interfaz de consola (CLI) e interfaz gráfica (GUI) construida con Kivy.
 
-## Creadores del proyecto
+## Creadores del proyecto original
 
 - Thomas Leon Torres
 - Andres Felipe Zora
+
+## Equipo de este fork (interfaz gráfica)
+
+- Juan Pablo Gaviria Franco
 
 ## Tabla de contenido
 
@@ -14,11 +18,15 @@ Calculadora de pensión de vejez para el Régimen de Prima Media en Colombia, de
 - [Arquitectura](#arquitectura)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Interfaz de usuario](#interfaz-de-usuario)
+  - [Interfaz de consola (CLI)](#interfaz-de-consola-cli)
+  - [Interfaz gráfica (GUI - Kivy)](#interfaz-gráfica-gui---kivy)
 - [Entradas](#entradas)
 - [Proceso](#proceso)
 - [Salidas](#salidas)
 - [Pruebas unitarias](#pruebas-unitarias)
 - [Ejecución de la aplicación](#ejecución-de-la-aplicación)
+  - [Ejecutar la interfaz de consola](#ejecutar-la-interfaz-de-consola)
+  - [Ejecutar la interfaz gráfica (GUI)](#ejecutar-la-interfaz-gráfica-gui)
 - [Versión de Python](#versión-de-python)
 - [Dependencias y entorno](#dependencias-y-entorno)
 - [Control de versiones](#control-de-versiones)
@@ -40,6 +48,8 @@ La aplicación permite ingresar los datos necesarios de una persona y calcular e
 
 El sistema también realiza validaciones sobre los datos ingresados y genera las excepciones correspondientes cuando los datos no son válidos o no se cumplen los requisitos necesarios para realizar el cálculo.
 
+El proyecto cuenta con dos interfaces de usuario, la interfaz de consola (CLI) y la interfaz gráfica (GUI), y ambas comparten exactamente la misma lógica de negocio ubicada en `src/model/logica_pension.py`.
+
 ---
 
 ## Tecnologías
@@ -47,11 +57,12 @@ El sistema también realiza validaciones sobre los datos ingresados y genera las
 El proyecto está desarrollado utilizando:
 
 - **Python 3**
+- **Kivy** para la interfaz gráfica (GUI).
 - **unittest** para las pruebas unitarias.
 - **Git** para el control de versiones.
 - **GitHub** para alojar el repositorio.
 
-El proyecto utiliza principalmente funcionalidades de la biblioteca estándar de Python, por lo que no requiere librerías externas para su funcionamiento.
+La lógica de negocio y la interfaz de consola utilizan únicamente la biblioteca estándar de Python. La única dependencia externa del proyecto es Kivy, necesaria exclusivamente para la interfaz gráfica.
 
 ---
 
@@ -88,25 +99,22 @@ src/model/logica_pension.py
 
 ### View
 
-La capa `view` contiene la interfaz de usuario.
+La capa `view` contiene las interfaces de usuario del proyecto.
 
-Actualmente se utiliza una interfaz de consola (CLI), donde el usuario ingresa los datos y posteriormente recibe los resultados del cálculo.
+Actualmente el proyecto cuenta con dos interfaces:
 
-Ubicación:
+- **Interfaz de consola (CLI)**, ubicada en `src/view/console/main.py`.
+- **Interfaz gráfica (GUI)**, construida con Kivy, ubicada en `src/view/console/gui/pension_gui.py`.
 
-```text
-src/view/console/
-```
-
-La vista se encarga principalmente de:
+Ambas vistas se encargan de:
 
 - Solicitar los datos al usuario.
 - Enviar los datos a la lógica de negocio.
 - Recibir el resultado.
-- Mostrar los resultados en consola.
+- Mostrar los resultados (en consola o en la ventana gráfica).
 - Mostrar los mensajes de error correspondientes.
 
-La vista no realiza directamente los cálculos internos de la pensión.
+Ninguna de las dos vistas realiza directamente los cálculos internos de la pensión: ambas llaman a las mismas funciones de `src/model/logica_pension.py`, por lo que cualquier corrección o mejora en las reglas de negocio se refleja automáticamente en las dos interfaces.
 
 ### Controller
 
@@ -116,14 +124,11 @@ Ubicación:
 
 ```text
 src/controller/
+```
 
-El directorio `src` debe estar marcado como **Sources Root** en el
-IDE de Pycharm, para que Python pueda reconocer correctamente los módulos del
-proyecto y resolver los imports.
+El directorio `src` debe estar marcado como **Sources Root** en el IDE de PyCharm, para que Python pueda reconocer correctamente los módulos del proyecto y resolver los imports.
 
-Para que Visual Studio Code reconozca correctamente los módulos
-ubicados dentro de `src`, "El directorio src se configura como ruta de búsqueda de módulos 
-de Python en Visual Studio Code."
+Para que Visual Studio Code reconozca correctamente los módulos ubicados dentro de `src`, el directorio `src` se configura como ruta de búsqueda de módulos de Python en Visual Studio Code.
 
 En `.vscode/settings.json`:
 
@@ -131,36 +136,6 @@ En `.vscode/settings.json`:
 {
     "python.analysis.extraPaths": ["./src"]
 }
-Calculadora_Pensional/  (SOLO VISUAL STUDIO CODE)
-│
-├── .vscode/
-│   ├── settings.json
-│   └── launch.json
-│
-├── src/
-│   ├── __init__.py
-│   │
-│   ├── model/
-│   │   ├── __init__.py
-│   │   └── logica_pension.py
-│   │
-│   ├── view/
-│   │   └── console/
-│   │       └── main.py
-│   │
-│   └── controller/
-│       ├── __init__.py
-│
-├── tests/
-│   ├── __init__.py
-│   └── test_pension.py
-│
-├── doc/
-│   ├── Entrevista.ogg
-│   └── trabajofinalcasosdeprueba.xlsx
-│
-├── .gitignore
-└── README.md
 ```
 
 La separación de responsabilidades permite mantener la lógica de negocio independiente de la interfaz de usuario, facilitando el mantenimiento, las pruebas y futuras modificaciones del proyecto.
@@ -169,38 +144,50 @@ La separación de responsabilidades permite mantener la lógica de negocio indep
 
 ## Estructura del proyecto
 
-La estructura principal del proyecto es la siguiente:
+La estructura actual del proyecto es la siguiente:
 
 ```text
 Proyecto_calculadora_pensional/
 │
+├── .idea/
+│
+├── doc/
+│   ├── Entrevista.ogg
+│   └── trabajofinalcasosdeprueba.xlsx
+│
 ├── src/  -> Sources Root
+│   ├── __init__.py
+│   │
+│   ├── controller/
+│   │   └── __init__.py
+│   │
 │   ├── model/
 │   │   ├── __init__.py
 │   │   └── logica_pension.py
 │   │
-│   ├── view/
-│   │   └── console/
-│   │       └── main.py
-│   │
-│   └── controller/
+│   └── view/
+│       └── console/
+│           ├── main.py
+│           └── gui/
+│               └── pension_gui.py
 │
 ├── tests/
+│   ├── __init__.py
 │   └── test_pension.py
 │
-├── README.md
-└── .gitignore
+├── .gitignore
+└── README.md
 ```
 
-La estructura permite separar claramente el código de la aplicación (`src`) de las pruebas automatizadas (`tests`).
+La estructura permite separar claramente la lógica de negocio (`model`), las interfaces de usuario (`view`), la futura capa de coordinación (`controller`), la documentación (`doc`) y las pruebas automatizadas (`tests`).
 
 ---
 
 ## Interfaz de usuario
 
-La aplicación cuenta con una interfaz de consola (CLI).
+### Interfaz de consola (CLI)
 
-Al iniciar la aplicación, el usuario debe ingresar los siguientes datos:
+Al iniciar la aplicación por consola, el usuario debe ingresar los siguientes datos:
 
 - IBC de los últimos 10 años.
 - IBC de toda la vida laboral.
@@ -209,17 +196,26 @@ Al iniciar la aplicación, el usuario debe ingresar los siguientes datos:
 - Edad.
 - Sexo.
 
-Después de ingresar los datos, el sistema realiza las validaciones correspondientes y, si los datos son válidos, muestra los resultados del cálculo.
+Después de ingresar los datos, el sistema realiza las validaciones correspondientes y, si los datos son válidos, muestra los resultados del cálculo por consola.
 
-Entre los resultados mostrados se encuentran:
+### Interfaz gráfica (GUI - Kivy)
 
-- IBL calculado.
-- Relación entre IBL y SMLMV.
-- Porcentaje base.
-- Semanas adicionales.
-- Incremento.
-- Porcentaje total.
-- Pensión estimada.
+La interfaz gráfica ofrece los mismos campos de entrada que la consola, pero en una ventana con formulario:
+
+- IBC de los últimos 10 años.
+- IBC de toda la vida laboral.
+- Salario mínimo legal vigente.
+- Semanas cotizadas.
+- Edad.
+- Sexo (M/F).
+
+La GUI incluye:
+
+- Botón **Calcular Pensión**, que valida los datos, ejecuta el cálculo y muestra el resultado completo (IBL, relación con el SMLMV, tasa base, semanas adicionales, incremento, tasa total y pensión estimada).
+- Botón **Limpiar Datos**, que restablece el formulario a sus valores por defecto.
+- Ventana emergente (popup) con un mensaje de error amigable cuando los datos ingresados no son válidos o no cumplen los requisitos para acceder a la pensión.
+
+Al igual que en la consola, la GUI no calcula nada por sí misma: únicamente construye un objeto `DatosPension` con lo escrito por el usuario y llama a `logica_pension.calcular_pension()`.
 
 ---
 
@@ -360,7 +356,7 @@ Por esta razón, si el resultado obtenido es menor al salario mínimo, se utiliz
 
 ## Salidas
 
-El sistema produce uno de los siguientes resultados.
+El sistema produce uno de los siguientes resultados, tanto en la consola como en la GUI.
 
 ### Cálculo exitoso
 
@@ -376,7 +372,7 @@ Si los datos son válidos y se cumplen los requisitos, el sistema muestra:
 
 ### Error de validación
 
-Si alguno de los datos no es válido o no se cumplen los requisitos para acceder a la pensión, el sistema muestra un mensaje de error indicando el problema.
+Si alguno de los datos no es válido o no se cumplen los requisitos para acceder a la pensión, el sistema muestra un mensaje de error indicando el problema (en consola como texto, y en la GUI como una ventana emergente).
 
 Entre los errores contemplados se encuentran:
 
@@ -423,6 +419,8 @@ Las pruebas cubren diferentes escenarios del cálculo, incluyendo:
 - Bloques incompletos de semanas adicionales.
 - Garantía de pensión mínima.
 
+Las pruebas unitarias validan directamente la capa `model`, por lo que siguen pasando sin ningún cambio al agregar la interfaz gráfica: la GUI reutiliza la misma lógica que ya estaba probada, no la duplica.
+
 ### Ejecutar las pruebas
 
 Desde la carpeta raíz del proyecto se puede ejecutar:
@@ -439,9 +437,9 @@ Si todas las pruebas son correctas, el sistema mostrará que las pruebas fueron 
 
 ## Ejecución de la aplicación
 
-Para ejecutar la interfaz de consola, se debe abrir una terminal ubicada en la carpeta raíz del proyecto.
+### Ejecutar la interfaz de consola
 
-Ejecutar:
+Para ejecutar la interfaz de consola, se debe abrir una terminal ubicada en la carpeta raíz del proyecto y ejecutar:
 
 ```bash
 python src/view/console/main.py
@@ -468,6 +466,30 @@ Sexo (M/F):
 
 Después de ingresar los datos, el sistema mostrará los resultados o el mensaje de error correspondiente.
 
+### Ejecutar la interfaz gráfica (GUI)
+
+La interfaz gráfica requiere tener instalado **Kivy**. Si no lo tienes instalado, ejecuta:
+
+```bash
+pip install kivy
+```
+
+En Windows, si la instalación anterior no incluye todas las dependencias gráficas necesarias, se puede instalar con:
+
+```bash
+pip install "kivy[base]" kivy_deps.angle kivy_deps.glew kivy_deps.sdl2
+```
+
+Una vez instalado Kivy, desde la carpeta raíz del proyecto se ejecuta:
+
+```bash
+python src/view/console/gui/pension_gui.py
+```
+
+Se abrirá una ventana con el formulario de la calculadora de pensión. Se deben diligenciar los mismos campos que en la consola (IBC de los últimos 10 años, IBC de toda la vida laboral, salario mínimo legal vigente, semanas cotizadas, edad y sexo) y presionar el botón **Calcular Pensión** para ver el resultado, o **Limpiar Datos** para reiniciar el formulario.
+
+Si algún dato ingresado no es válido, la aplicación muestra una ventana emergente con el mensaje de error correspondiente, sin cerrar el programa.
+
 ---
 
 ## Versión de Python
@@ -492,19 +514,15 @@ Python 3.10.x
 
 ## Dependencias y entorno
 
-El proyecto utiliza principalmente funcionalidades de la biblioteca estándar de Python.
+La lógica de negocio, la interfaz de consola y las pruebas automatizadas utilizan únicamente la biblioteca estándar de Python (incluyendo `unittest`, que no requiere instalación adicional).
 
-No se requieren librerías externas para ejecutar la aplicación.
+La interfaz gráfica requiere **Kivy** como única dependencia externa:
 
-Las pruebas automatizadas utilizan:
-
-```text
-unittest
+```bash
+pip install kivy
 ```
 
-`unittest` forma parte de la biblioteca estándar de Python, por lo que no es necesario instalarlo mediante pip.
-
-Para ejecutar el proyecto solamente es necesario tener instalada una versión compatible de Python.
+Para ejecutar el proyecto completo (consola, GUI y pruebas) solamente es necesario tener instalada una versión compatible de Python y, para la GUI, la librería Kivy.
 
 ---
 
