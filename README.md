@@ -167,15 +167,25 @@ Proyecto_calculadora_pensional/
 │   │   └── logica_pension.py
 │   │
 │   └── view/
-│       └── console/
-│           ├── main.py
-│           └── gui/
-│               └── pension_gui.py
+│       ├── console/
+│       │   ├── main.py
+│       │   └── gui/
+│       │       └── pension_gui.py     (puente de retrocompatibilidad)
+│       └── gui/
+│           ├── __init__.py
+│           └── pension_gui.py         (interfaz gráfica principal)
 │
 ├── tests/
 │   ├── __init__.py
 │   └── test_pension.py
 │
+├── dist/
+│   └── CalculadoraPensional/
+│       ├── CalculadoraPensional.exe   (ejecutable para Windows)
+│       └── _internal/                 (dependencias empaquetadas)
+│
+├── CalculadoraPensional.spec          (configuración de PyInstaller)
+├── build_exe.py                       (script de compilación)
 ├── .gitignore
 └── README.md
 ```
@@ -491,7 +501,7 @@ pip install "kivy[base]" kivy_deps.angle kivy_deps.glew kivy_deps.sdl2
 Una vez instalado Kivy, desde la carpeta raíz del proyecto se ejecuta:
 
 ```bash
-python src/view/console/gui/pension_gui.py
+python src/view/gui/pension_gui.py
 ```
 
 Se abrirá una ventana con el formulario de la calculadora de pensión. Se deben diligenciar los mismos campos que en la consola (IBC de los últimos 10 años, IBC de toda la vida laboral, salario mínimo legal vigente, semanas cotizadas, edad y sexo) y presionar el botón **Calcular Pensión** para ver el resultado, o **Limpiar Datos** para reiniciar el formulario.
@@ -502,6 +512,35 @@ Adicionalmente, se puede usar:
 - **Exportar CSV**, para guardar ese historial en `doc/historial_pensiones.csv` y poder abrirlo en Excel u otra hoja de cálculo.
 
 Si algún dato ingresado no es válido, la aplicación muestra una ventana emergente con el mensaje de error correspondiente, sin cerrar el programa. Lo mismo ocurre si el historial está vacío al intentar exportarlo, o si el archivo CSV no se puede guardar (por ejemplo, por permisos de escritura).
+
+---
+
+### Ejecutar el ejecutable de Windows (.exe)
+
+El proyecto incluye un ejecutable para Windows que **no requiere tener Python instalado** en el equipo de destino. Todas las dependencias (Python, Kivy, SDL2, etc.) están empaquetadas dentro de la carpeta `dist/CalculadoraPensional/`.
+
+#### Uso en cualquier PC con Windows
+
+1. Copiar **toda** la carpeta `dist/CalculadoraPensional/` al PC de destino (el `.exe` más la carpeta `_internal/` deben estar juntos).
+2. Hacer doble clic en `CalculadoraPensional.exe`.
+
+> **Nota importante:** El ejecutable **no funciona si se mueve el `.exe` sin la carpeta `_internal/`**. Siempre deben estar en la misma ubicación.
+
+#### Regenerar el ejecutable (si se modifica el código fuente)
+
+Si se realizan cambios en el código y se desea regenerar el ejecutable, se necesita tener instalado Python y PyInstaller:
+
+```bash
+pip install pyinstaller kivy kivy_deps.angle kivy_deps.glew kivy_deps.sdl2
+```
+
+Luego, desde la carpeta raíz del proyecto:
+
+```bash
+python build_exe.py
+```
+
+El nuevo ejecutable quedará en `dist/CalculadoraPensional/CalculadoraPensional.exe`.
 
 ---
 
