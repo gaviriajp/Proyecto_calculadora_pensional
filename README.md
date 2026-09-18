@@ -62,7 +62,7 @@ El proyecto está desarrollado utilizando:
 - **Git** para el control de versiones.
 - **GitHub** para alojar el repositorio.
 
-La lógica de negocio y la interfaz de consola utilizan únicamente la biblioteca estándar de Python. La única dependencia externa del proyecto es Kivy, necesaria exclusivamente para la interfaz gráfica.
+La lógica de negocio y la interfaz de consola utilizan únicamente la biblioteca estándar de Python. La única dependencia externa del proyecto es Kivy, necesaria exclusivamente para la interfaz gráfica. La exportación del historial a CSV utiliza el módulo `csv` de la biblioteca estándar.
 
 ---
 
@@ -153,7 +153,8 @@ Proyecto_calculadora_pensional/
 │
 ├── doc/
 │   ├── Entrevista.ogg
-│   └── trabajofinalcasosdeprueba.xlsx
+│   ├── trabajofinalcasosdeprueba.xlsx
+│   └── historial_pensiones.csv        (generado al exportar desde la GUI)
 │
 ├── src/  -> Sources Root
 │   ├── __init__.py
@@ -213,7 +214,9 @@ La GUI incluye:
 
 - Botón **Calcular Pensión**, que valida los datos, ejecuta el cálculo y muestra el resultado completo (IBL, relación con el SMLMV, tasa base, semanas adicionales, incremento, tasa total y pensión estimada).
 - Botón **Limpiar Datos**, que restablece el formulario a sus valores por defecto.
-- Ventana emergente (popup) con un mensaje de error amigable cuando los datos ingresados no son válidos o no cumplen los requisitos para acceder a la pensión.
+- Botón **Ver Historial**, que abre una ventana con la lista de todos los cálculos realizados durante la sesión actual (fecha y hora, edad, sexo, semanas cotizadas y pensión estimada de cada uno), del más reciente al más antiguo.
+- Botón **Exportar CSV**, que guarda todo el historial de la sesión en el archivo `doc/historial_pensiones.csv`, con todos los datos de entrada y todos los resultados del cálculo (IBL, relación, tasa base, semanas adicionales, incremento, tasa total y pensión). La carpeta `doc` se crea automáticamente si no existe.
+- Ventana emergente (popup) con un mensaje de error amigable cuando los datos ingresados no son válidos o no cumplen los requisitos para acceder a la pensión, o cuando no se puede exportar el archivo CSV (por ejemplo, por permisos de escritura).
 
 Al igual que en la consola, la GUI no calcula nada por sí misma: únicamente construye un objeto `DatosPension` con lo escrito por el usuario y llama a `logica_pension.calcular_pension()`.
 
@@ -283,6 +286,7 @@ Entre las validaciones realizadas se encuentran:
 - El salario mínimo legal vigente no puede ser negativo.
 - El salario mínimo legal vigente no puede ser cero.
 - Se deben cumplir las semanas mínimas requeridas.
+- El sexo debe ser `M` o `F`.
 - Se debe cumplir la edad mínima correspondiente.
 
 Si alguno de estos datos no es válido, el sistema genera la excepción correspondiente y muestra un mensaje de error.
@@ -370,6 +374,8 @@ Si los datos son válidos y se cumplen los requisitos, el sistema muestra:
 - Tasa total.
 - Valor estimado de la pensión.
 
+En la GUI, además, cada cálculo exitoso queda guardado en el historial de la sesión, consultable con el botón **Ver Historial** y exportable a CSV con el botón **Exportar CSV**.
+
 ### Error de validación
 
 Si alguno de los datos no es válido o no se cumplen los requisitos para acceder a la pensión, el sistema muestra un mensaje de error indicando el problema (en consola como texto, y en la GUI como una ventana emergente).
@@ -383,6 +389,7 @@ Entre los errores contemplados se encuentran:
 - Salario mínimo legal vigente igual a cero.
 - Salario mínimo legal vigente negativo.
 - Edad insuficiente.
+- Sexo inválido (distinto de `M` o `F`).
 - Valores de entrada que no sean numéricos.
 
 ---
@@ -411,6 +418,7 @@ Las pruebas cubren diferentes escenarios del cálculo, incluyendo:
 - Salario mínimo igual a cero.
 - Salario mínimo negativo.
 - Edad insuficiente.
+- Sexo inválido.
 - Edad mínima para mujeres.
 - Edad mínima para hombres.
 - Tasa de reemplazo mínima del 55%.
@@ -488,7 +496,12 @@ python src/view/console/gui/pension_gui.py
 
 Se abrirá una ventana con el formulario de la calculadora de pensión. Se deben diligenciar los mismos campos que en la consola (IBC de los últimos 10 años, IBC de toda la vida laboral, salario mínimo legal vigente, semanas cotizadas, edad y sexo) y presionar el botón **Calcular Pensión** para ver el resultado, o **Limpiar Datos** para reiniciar el formulario.
 
-Si algún dato ingresado no es válido, la aplicación muestra una ventana emergente con el mensaje de error correspondiente, sin cerrar el programa.
+Adicionalmente, se puede usar:
+
+- **Ver Historial**, para revisar todos los cálculos realizados durante la sesión actual.
+- **Exportar CSV**, para guardar ese historial en `doc/historial_pensiones.csv` y poder abrirlo en Excel u otra hoja de cálculo.
+
+Si algún dato ingresado no es válido, la aplicación muestra una ventana emergente con el mensaje de error correspondiente, sin cerrar el programa. Lo mismo ocurre si el historial está vacío al intentar exportarlo, o si el archivo CSV no se puede guardar (por ejemplo, por permisos de escritura).
 
 ---
 
@@ -514,7 +527,7 @@ Python 3.10.x
 
 ## Dependencias y entorno
 
-La lógica de negocio, la interfaz de consola y las pruebas automatizadas utilizan únicamente la biblioteca estándar de Python (incluyendo `unittest`, que no requiere instalación adicional).
+La lógica de negocio, la interfaz de consola y las pruebas automatizadas utilizan únicamente la biblioteca estándar de Python (incluyendo `unittest` y `csv`, que no requieren instalación adicional).
 
 La interfaz gráfica requiere **Kivy** como única dependencia externa:
 
